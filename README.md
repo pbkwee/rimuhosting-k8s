@@ -18,7 +18,9 @@ You should now be able to use the RimuHostingAPI Python library and rimuhostingk
 Create the master node:
 
 ```
-$ python3 mkmaster.py --server_json sample-configs/unmodified/servers/server.json --cloud_config sample-configs/defaults/cloud-init/master.yaml --cluster cluster1
+$ python3 mkmaster.py --server_json sample-configs/unmodified/servers/server.json \
+--cloud_config sample-configs/defaults/cloud-init/master.yaml \
+--cluster cluster1
 ```
 
 See that node:
