@@ -40,7 +40,7 @@ Create a few minions:
 
 ```
 j=0
-for i in DCDALLAS DCAUCKLAND DCDALLAS DCFRANKFURT; do 
+for i in DCDALLAS DCAUCKLAND DCFRANKFURT; do 
 j=$((j+1)); 
 python3 mkminion.py --server_json sample-configs/unmodified/servers/server.json \
 --cloud_config sample-configs/defaults/cloud-init/node.yaml --cluster cluster1 \
@@ -59,6 +59,7 @@ See export variables for this cluster:
 $python3 env.py --cluster cluster1 
 export KUBERNETES_MASTER_IPV4=xx.xx.xx.xx
 export SERVER_ARG='--server=http://xx.xx.xx.xx:8080'
+alias rkubectl='kubectl $SERVER_ARG'
 unset KUBERNETES_MINION_IPV4S
 declare -a KUBERNETES_MINION_IPV4S
 export KUBERNETES_MINION_IPV4S=( xx.xx.yy.yy xx.xx.yy.zz )
@@ -81,7 +82,7 @@ xx.xx.yy.zz
 See your 'empty' kubernetes cluster:
 
 ```
-kubectl $SERVER_ARG get all
+rkubectl get all
 CONTROLLER   CONTAINER(S)   IMAGE(S)   SELECTOR   REPLICAS   AGE
 NAME         CLUSTER_IP   EXTERNAL_IP   PORT(S)   SELECTOR   AGE
 kubernetes   10.100.0.1   <none>        443/TCP   <none>     45m
@@ -92,17 +93,17 @@ NAME      LABELS    STATUS    VOLUME    CAPACITY   ACCESSMODES   AGE
 Load a simple test pod:
 
 ```
-$ kubectl $SERVER_ARG create -f sample-configs/unmodified/busybox.yaml 
+$ rkubectl create -f sample-configs/unmodified/busybox.yaml 
 pod "busybox" created
 
-$ kubectl $SERVER_ARG get pods
+$ rkubectl get pods
 NAME      READY     STATUS    RESTARTS   AGE
 busybox   1/1       Running   0          37s
 ```
 
 Run something in it:
 ```
-$ kubectl $SERVER_ARG exec busybox -- echo 'Hello, world!'
+$ rkubectl exec busybox -- echo 'Hello, world!'
 Hello, world!
 ```
 
@@ -110,7 +111,7 @@ Setup the guestbook app:
 
 ```
 # substitute the ip address for the environment value
-$ kubectl $SERVER_ARG create  -f <(cat sample-configs/defaults/skydns-controller.yaml | replace '$(KUBERNETES_MASTER_IPV4)' "${KUBERNETES_MASTER_IPV4}") 
+$ rkubectl create  -f <(cat sample-configs/defaults/skydns-controller.yaml | replace '$(KUBERNETES_MASTER_IPV4)' "${KUBERNETES_MASTER_IPV4}") 
 
 $ for i in \
 sample-configs//defaults/skydns-service.yaml \
@@ -120,7 +121,7 @@ sample-configs//unmodified/guestbook/redis-slave-controller.yaml \
 sample-configs//unmodified/guestbook/redis-slave-service.yaml \
 sample-configs//unmodified/guestbook/frontend-service.yaml \
 sample-configs//unmodified/guestbook/frontend-controller.yaml; do 
-  kubectl $SERVER_ARG create -f $i
+  rkubectl create -f $i
 done
 
 ```
@@ -128,7 +129,7 @@ done
 See all of the new pods.  Include --all-namespaces to include the kube-dns pods which are running in a kube-system namespace.
 
 ```
-$ kubectl $SERVER_ARG get all --all-namespaces
+$ rkubectl get all --all-namespaces
 NAMESPACE     CONTROLLER         CONTAINER(S)   IMAGE(S)                                         SELECTOR                      REPLICAS   AGE
 default       frontend           php-redis      kubernetes/example-guestbook-php-redis:v2        name=frontend                 3          21s
 default       nginx-controller   nginx          nginx                                            app=nginx                     2          26s
@@ -162,13 +163,13 @@ NAMESPACE   NAME      LABELS    STATUS    VOLUME    CAPACITY   ACCESSMODES   AGE
 Figure out the external port for the frontend service:
 
 ```
-$ kubectl $SERVER_ARG  get svc frontend -o json | grep  "nodePort"
+$ rkubectl  get svc frontend -o json | grep  "nodePort"
                 "nodePort": 31108
 ```
 
 See the IPs that the frontend service pods are running on:
 ```
-$ kubectl $SERVER_ARG  get pods -o wide | egrep 'NODE|frontend'
+$ rkubectl  get pods -o wide | egrep 'NODE|frontend'
 NAME                 READY     STATUS    RESTARTS   AGE       NODE
 frontend-67zo9       1/1       Running   0          8m        xx.xx.xx.yy
 frontend-ch4o5       1/1       Running   0          8m        xx.xx.xx.zz
@@ -177,4 +178,14 @@ frontend-xcgc8       1/1       Running   0          8m        xx.xx.xx.zz
 
 Then browse to that NODE:nodePort value.  e.g. http://xx.xx.xx.yy:31108
 
-TODO: dns is currently broken needing debugging.
+Additional tips:
+- add a --isreinstall to mkmaster to do a clean reinstall there.
+- add a --reinstall_order_oid to mkminion to do a clean reinstall of a minion
+- run rmcluster --cluster cluster1 to delete all the servers (master and minions) in a cluster
+
+TODO: 
+- dns is currently broken somehow in the sample guestbook app above and is in needing of debugging.
+- Need to add security to the master API (e.g. using secret tokens, or sharing around ca certs).
+
+If you would like to work on the TODO list, please fork the project and contribute back.  Email support at rimuhosting
+before you start working on the TODO list to double-check it is current and we can pay a bounty for completing these tasks.

@@ -18,10 +18,13 @@ class Args(object):
         xx = rimuapi.Api()
         # has a specific cluster id, is active, is master
         master = xx.orders('N', {'server_type': 'VPS','meta_search': 'com.rimuhosting.kclusterid:'+self.cluster+' com.rimuhosting.kismaster:Y'})
+        if not master or len(master)==0:
+            raise Exception("No such cluster located.")
         output = []
         for order in master:
             output.append("export KUBERNETES_MASTER_IPV4=" + order["allocated_ips"]["primary_ip"])
             output.append("export SERVER_ARG='--server=http://" + order["allocated_ips"]["primary_ip"]+":8080'")
+            output.append("alias rkubectl='kubectl $SERVER_ARG'")
         minion_ips=""
         minions = xx.orders('N', {'server_type': 'VPS','meta_search': 'com.rimuhosting.kclusterid:'+self.cluster+' com.rimuhosting.kisminion:Y'})
         for order in minions:
