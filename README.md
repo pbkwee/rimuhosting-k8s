@@ -47,7 +47,7 @@ See export variables for this cluster:
 ```
 $python3 env.py --cluster cluster1 
 export KUBERNETES_MASTER_IPV4=xx.xx.xx.xx
-export SERVER_ARG='--server=http://74.50.50.128:8080'
+export SERVER_ARG='--server=http://xx.xx.xx.xx:8080'
 unset KUBERNETES_MINION_IPV4S
 declare -a KUBERNETES_MINION_IPV4S
 export KUBERNETES_MINION_IPV4S=( xx.xx.yy.yy xx.xx.yy.zz )
