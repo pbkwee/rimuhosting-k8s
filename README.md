@@ -6,6 +6,15 @@ Get a server API key at https://rimuhosting.com/cp/apikeys.jsp
 
 If you do not already have a server with us, you will need to email RimuHosting and ask them to enable automated server setups on your account.
 
+Git clone this project as well as https://github.com/pbkwee/RimuHostingAPI.  The https://github.com/pbkwee/RimuHostingAPI project has a few changes required for rimuhosting-k8s and Python3.  
+
+Then on both run:
+```
+python3 setup.py build install
+```
+
+You should now be able to use the RimuHostingAPI Python library and rimuhostingk8s command line tools.
+
 Create the master node:
 
 ```
