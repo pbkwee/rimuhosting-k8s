@@ -4,7 +4,7 @@ __author__ = "Peter Bryant <p.misc2@rimuhosting.com>"
 import os
 from setuptools import setup
 NAME = "rimuhostingk8s"
-GITHUB_URL = "https://github.com/pbkwee/%s" % (NAME)
+GITHUB_URL = "https://github.com/pbkwee/rimuhosting-k8s"
 DESCRIPTION = "Python interface to RimuHosting API"
 
 VERSION = "0.0.1"
