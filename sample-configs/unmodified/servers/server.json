@@ -1,0 +1,10 @@
+{
+  "vps_parameters": {
+    "disk_space_mb": "8192",
+    "memory_mb": "4096"
+  },
+  "instantiation_options": {
+    "distro": "coreos.64",
+    "domain_name": "coreos-master.build.rimuhosting.com"
+  }
+}
