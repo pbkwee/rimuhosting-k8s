@@ -111,7 +111,9 @@ Setup the guestbook app:
 
 ```
 # substitute the ip address for the environment value
-$ rkubectl create  -f <(cat sample-configs/defaults/skydns-controller.yaml | replace '$(KUBERNETES_MASTER_IPV4)' "${KUBERNETES_MASTER_IPV4}") 
+$ cat sample-configs/defaults/skydns-controller.yaml | replace '$(KUBERNETES_MASTER_IPV4)' "${KUBERNETES_MASTER_IPV4}" > skydns-controller.$$.yaml
+$ rkubectl create  -f skydns-controller.$$.yaml
+$ rm skydns-controller.$$.yaml 
 
 $ for i in \
 sample-configs//defaults/skydns-service.yaml \

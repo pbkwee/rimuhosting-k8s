@@ -32,10 +32,8 @@ spec:
         - /var/etcd/data
         - -listen-client-urls
         - http://127.0.0.1:2379,http://127.0.0.1:4001
-#        - http://0.0.0.0:2379,http://0.0.0.0:4001
         - -advertise-client-urls
         - http://127.0.0.1:2379,http://127.0.0.1:4001
-#        - http://0.0.0.0:2379,http://0.0.0.0:4001
         - -initial-cluster-token
         - skydns-etcd
         volumeMounts:
@@ -51,18 +49,18 @@ spec:
         # command = "/kube2sky"
         - -domain=cluster.local
         - -kube_master_url=http://$(KUBERNETES_MASTER_IPV4):8080
-
       - name: skydns
-        image: gcr.io/google_containers/skydns:2015-03-11-001
+        image: gcr.io/google_containers/skydns:2015-10-13-8c72f8c
         resources:
           limits:
             cpu: 100m
             memory: 50Mi
         args:
         # command = "/skydns"
-        - -machines=http://localhost:4001
+        - -machines=http://127.0.0.1:4001
         - -addr=0.0.0.0:53
-        - -domain=cluster.local
+        - -ns-rotate=false
+        - -domain=cluster.local.
         ports:
         - containerPort: 53
           name: dns
@@ -91,7 +89,7 @@ spec:
             cpu: 10m
             memory: 20Mi
         args:
-        - -cmd=nslookup kubernetes.default.svc.cluster.local localhost >/dev/null
+        - -cmd=nslookup kubernetes.default.svc.cluster.local 127.0.0.1 >/dev/null
         - -port=8080
         ports:
         - containerPort: 8080
