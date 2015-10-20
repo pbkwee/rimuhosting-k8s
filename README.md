@@ -189,5 +189,4 @@ TODO:
 - dns is currently broken somehow in the sample guestbook app above and is in needing of debugging.
 - Need to add security to the master API (e.g. using secret tokens, or sharing around ca certs).
 
-If you would like to work on the TODO list, please fork the project and contribute back.  Email support at rimuhosting
-before you start working on the TODO list to double-check it is current and we can pay a bounty for completing these tasks.
+If you would like to work on the TODO list, please fork the project and contribute back.  Email support at rimuhosting before you start working on the TODO list to double-check it is current and we can pay a bounty for completing these tasks.
