@@ -10,15 +10,14 @@ metadata:
 spec:
   selector:
     k8s-app: kube-dns
-  clusterIP: 10.100.88.88
-#  clusterIP: 10.0.0.10
+  clusterIP:  10.100.88.88
   type: NodePort
   ports:
   - name: dns
     port: 53
-    nodePort:
     protocol: UDP
+    nodePort: 
   - name: dns-tcp
     port: 53
-    nodePort:
     protocol: TCP
+    nodePort: 

@@ -8,7 +8,7 @@ metadata:
     version: v9
     kubernetes.io/cluster-service: "true"
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     k8s-app: kube-dns
     version: v9

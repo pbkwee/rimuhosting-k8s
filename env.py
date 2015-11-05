@@ -25,6 +25,7 @@ class Args(object):
             output.append("export KUBERNETES_MASTER_IPV4=" + order["allocated_ips"]["primary_ip"])
             output.append("export SERVER_ARG='--server=http://" + order["allocated_ips"]["primary_ip"]+":8080'")
             output.append("alias rkubectl='kubectl $SERVER_ARG'")
+            output.append("alias rkubectlgetall='rkubectl get pods,services,replicationcontrollers,nodes,events,componentstatuses,limitranges,persistentvolumes,persistentvolumeclaims,resourcequotas,namespaces,endpoints,serviceaccounts,secrets  --all-namespaces -o=wide'")
         minion_ips=""
         minions = xx.orders('N', {'server_type': 'VPS','meta_search': 'com.rimuhosting.kclusterid:'+self.cluster+' com.rimuhosting.kisminion:Y'})
         for order in minions:
