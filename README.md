@@ -165,8 +165,9 @@ NAMESPACE   NAME      LABELS    STATUS    VOLUME    CAPACITY   ACCESSMODES   AGE
 Figure out the external port for the frontend service:
 
 ```
-$ rkubectl  get svc frontend -o json | grep  "nodePort"
-                "nodePort": 31108
+FEPORT=$(rkubectl get services -l 'name=frontend' "--output=jsonpath={.items[*] .spec .ports[*] .nodePort  }")
+echo "Guestbook web page urls:"
+for i in ${KUBERNETES_MINION_IPV4S[@]}; do echo "http://$i:$FEPORT"; done
 ```
 
 See the IPs that the frontend service pods are running on:
