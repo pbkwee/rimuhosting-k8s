@@ -66,6 +66,7 @@ class Args(object):
         
         # replace the magic $kubernetes_master_ipv4 string with the master ip
         server_json["instantiation_options"]["cloud_config_data"] = server_json["instantiation_options"]["cloud_config_data"].replace("$kubernetes_master_ipv4", ip, 99)
+        server_json["instantiation_options"]["cloud_config_data"] = server_json["instantiation_options"]["cloud_config_data"].replace("<master-private-ip>", ip, 99)
         if self.reinstall_order_oid:
             reinstallminion = xx.orders('N', {'server_type': 'VPS', 'order_oids' : self.reinstall_order_oid, 'meta_search': 'com.rimuhosting.kclusterid:' + self.cluster + ' com.rimuhosting.kisminion:Y'})
             if len(reinstallminion)==0:

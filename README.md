@@ -18,7 +18,7 @@ You should now be able to use the RimuHostingAPI Python library and rimuhostingk
 Create the master node:
 
 ```
-$ python3 mkmaster.py --server_json sample-configs/unmodified/servers/server.json \
+$ python3 mkmaster.py --server_json sample-configs/defaults/servers/server.json \
 --cloud_config sample-configs/defaults/cloud-init/master.yaml \
 --cluster cluster1
 ```
@@ -42,7 +42,7 @@ Create a few minions:
 j=0
 for i in DCDALLAS DCAUCKLAND DCFRANKFURT; do 
 j=$((j+1)); 
-python3 mkminion.py --server_json sample-configs/unmodified/servers/server.json \
+python3 mkminion.py --server_json sample-configs/defaults/servers/server.json \
 --cloud_config sample-configs/defaults/cloud-init/node.yaml --cluster cluster1 \
 --dc_location $i --domain_name coreos-minion-$j-$i.localhost &
 done
@@ -93,7 +93,7 @@ NAME      LABELS    STATUS    VOLUME    CAPACITY   ACCESSMODES   AGE
 Load a simple test pod:
 
 ```
-$ rkubectl create -f sample-configs/unmodified/busybox.yaml 
+$ rkubectl create -f sample-configs/defaults/busybox.yaml 
 pod "busybox" created
 
 $ rkubectl get pods
@@ -110,20 +110,17 @@ Hello, world!
 Setup the guestbook app:
 
 ```
-# substitute the ip address for the environment value
-$ cat sample-configs/defaults/skydns-controller.yaml | replace '$(KUBERNETES_MASTER_IPV4)' "${KUBERNETES_MASTER_IPV4}" > skydns-controller.$$.yaml
-$ rkubectl create  -f skydns-controller.$$.yaml
-$ rm skydns-controller.$$.yaml 
-
-$ for i in \
-sample-configs//defaults/skydns-service.yaml \
-sample-configs//unmodified/guestbook/redis-master-controller.yaml \
-sample-configs//unmodified/guestbook/redis-master-service.yaml \
-sample-configs//unmodified/guestbook/redis-slave-controller.yaml \
-sample-configs//unmodified/guestbook/redis-slave-service.yaml \
-sample-configs//unmodified/guestbook/frontend-service.yaml \
-sample-configs//unmodified/guestbook/frontend-controller.yaml; do 
-  rkubectl create -f $i
+for i in \
+sample-configs/defaults/skydns-controller.yaml \
+sample-configs/defaults/skydns-service.yaml \
+sample-configs/defaults/guestbook/redis-master-controller.yaml \
+sample-configs/defaults/guestbook/redis-master-service.yaml \
+sample-configs/defaults/guestbook/redis-slave-controller.yaml \
+sample-configs/defaults/guestbook/redis-slave-service.yaml \
+sample-configs/defaults/guestbook/frontend-controller.yaml \
+sample-configs/defaults/guestbook/frontend-service.yaml ; do
+  # substitute the ip address for the environment value
+  cat $i | replace '$(KUBERNETES_MASTER_IPV4)' "${KUBERNETES_MASTER_IPV4}" | rkubectl create -f -
 done
 
 ```
@@ -165,9 +162,9 @@ NAMESPACE   NAME      LABELS    STATUS    VOLUME    CAPACITY   ACCESSMODES   AGE
 Figure out the external port for the frontend service:
 
 ```
-FEPORT=$(rkubectl get services -l 'name=frontend' "--output=jsonpath={.items[*] .spec .ports[*] .nodePort  }")
-echo "Guestbook web page urls:"
-for i in ${KUBERNETES_MINION_IPV4S[@]}; do echo "http://$i:$FEPORT"; done
+  FEPORT=$(rkubectl get services -l 'name=frontend' "--output=jsonpath={.items[*] .spec .ports[*] .nodePort  }")
+  echo "Guestbook web page urls:"
+  for i in ${KUBERNETES_MINION_IPV4S[@]}; do echo "http://$i:$FEPORT"; done
 ```
 
 See the IPs that the frontend service pods are running on:
