@@ -178,10 +178,24 @@ frontend-xcgc8       1/1       Running   0          8m        xx.xx.xx.zz
 
 Then browse to that NODE:nodePort value.  e.g. http://xx.xx.xx.yy:31108
 
+To reinstall the master:
+```
+python3 mkmaster.py --isreinstall --cloud_config sample-configs/defaults/cloud-init/master.yaml \
+--server_json sample-configs/defaults/servers/server.json \
+--cluster cluster1
+```
+
+To reinstall the minions:
+```
+for i in ${KUBERNETES_MINION_ORDER_OIDS[@]}; do 
+python3 mkminion.py --reinstall_order_oid $i --server_json sample-configs/defaults/servers/server.json \
+--cloud_config sample-configs/defaults/cloud-init/node.yaml --cluster cluster1 &
+done
+```
+
 Additional tips:
-- add a --isreinstall to mkmaster to do a clean reinstall there.
-- add a --reinstall_order_oid to mkminion to do a clean reinstall of a minion
-- run rmcluster --cluster cluster1 to delete all the servers (master and minions) in a cluster
+- run rmcluster --cluster cluster1 to delete all the servers (master and minions) in a cluster.  Note it is faster/better 
+to reinstall (per the options above) than to delete then recreate a new master/minion set  
 
 TODO: 
 - dns is currently broken somehow in the sample guestbook app above and is in needing of debugging.
